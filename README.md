@@ -11,6 +11,6 @@
    - https://gobyexample.com/reading-files
    - https://gobyexample.com/writing-files
 
-<br />
+
 ------------
-<div style="text-align: right">Juan Matias Gomez Andersen</div>
+Juan Matias Gomez Andersen
