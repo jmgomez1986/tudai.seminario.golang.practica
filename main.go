@@ -49,7 +49,7 @@ func main() {
 	if bookFinded != nil {
 		fmt.Printf("The book with id %v was found successfully!!!\n", findBookID)
 	} else {
-		fmt.Printf("The book with id %v was not!!!\n", findBookID)
+		fmt.Printf("The book with id %v was not found!!!\n", findBookID)
 	}
 
 	fmt.Println("\n------------------------ UPDATE ------------------------")
