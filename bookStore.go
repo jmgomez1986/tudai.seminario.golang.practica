@@ -1,4 +1,4 @@
-package pkgbookstore
+package main
 
 import (
 	"fmt"

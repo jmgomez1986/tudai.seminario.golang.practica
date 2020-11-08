@@ -2,12 +2,11 @@ package main
 
 import (
 	"fmt"
-	"tudai.seminario.golang.practica/internal/pkgbookstore"
 )
 
 func main() {
 
-	newBook := &pkgbookstore.Book{
+	newBook := &Book{
 		ID:        123,
 		Name:      "It",
 		Language:  "Spanish",
@@ -18,7 +17,7 @@ func main() {
 		Price:     1300,
 	}
 
-	newBook2 := &pkgbookstore.Book{
+	newBook2 := &Book{
 		ID:        456,
 		Name:      "Salem`s Lot",
 		Language:  "Spanish",
@@ -32,7 +31,7 @@ func main() {
 	var bookID = 456
 
 	// Create
-	bookStore := pkgbookstore.NewBookStore()
+	bookStore := NewBookStore()
 	bookStore.Add(*newBook)
 	bookStore.Add(*newBook2)
 	fmt.Println("\n------------------------ CREATE ------------------------")
