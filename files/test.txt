@@ -1,0 +1,30 @@
+{
+ "ID": 1,
+ "Name": "It",
+ "Language": "Spanish",
+ "Status": "New",
+ "Genre": "Terror",
+ "Editorial": "Plaza\u0026James",
+ "Author": "Stephen King",
+ "Price": 1300
+}
+{
+ "ID": 2,
+ "Name": "Salem`s Lot",
+ "Language": "Spanish",
+ "Status": "New",
+ "Genre": "Terror",
+ "Editorial": "Plaza\u0026James",
+ "Author": "Stephen King",
+ "Price": 1500
+}
+{
+ "ID": 3,
+ "Name": "Salem`s Lot",
+ "Language": "Spanish",
+ "Status": "New",
+ "Genre": "Terror",
+ "Editorial": "Plaza\u0026James",
+ "Author": "Stephen King",
+ "Price": 1500
+}
