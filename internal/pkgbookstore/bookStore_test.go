@@ -1,21 +1,20 @@
-package main
+package pkgbookstore
 
 import (
 	"testing"
-	"tudai.seminario.golang.practica/internal/pkgbookstore"
 )
 
 func TestBookStoreAdd(t *testing.T) {
 	var bookID = 123
 
-	bookStore := pkgbookstore.NewBookStore()
+	bookStore := NewBookStore()
 
 	bookFinded := bookStore.FindByID(bookID)
 	if bookFinded != nil {
 		t.Errorf("El libro con el ID %d ya existe!!!\n", bookID)
 	}
 	
-	newBook := &pkgbookstore.Book{
+	newBook := &Book{
 		ID:        123,
 		Name:      "It",
 		Language:  "Spanish",
@@ -35,4 +34,3 @@ func TestBookStoreAdd(t *testing.T) {
 		t.Errorf("El libro con el ID %d no tiene el nombre de la consulta", bookID)
 	}
 }
-

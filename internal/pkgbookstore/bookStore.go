@@ -1,6 +1,7 @@
 package pkgbookstore
 
 import (
+	"errors"
 	"fmt"
 )
 
@@ -42,9 +43,14 @@ func (bs BookStore) Print() {
 	}
 }
 
-// Delete ... 
-func (bs BookStore) Delete(ID int) {
-	delete(bs.Books, ID)
+// Delete ...
+func (bs BookStore) Delete(ID int) (error) {
+	_, ok := bs.Books[ID]
+	if ok {
+		delete(bs.Books, ID)
+		return nil
+	}
+	return errors.New("element is missing")
 }
 
 // FindByID ... Read
@@ -53,6 +59,11 @@ func (bs BookStore) FindByID(ID int) *Book {
 }
 
 // UpdateByID ... Update book replacing
-func (bs BookStore) UpdateByID(b Book) {
-	bs.Books[b.ID] = &b
+func (bs BookStore) UpdateByID(b Book) (error) {
+	_, ok := bs.Books[b.ID]
+	if ok {
+		bs.Books[b.ID] = &b
+		return nil
+	}
+	return errors.New("element is missing")	
 }
