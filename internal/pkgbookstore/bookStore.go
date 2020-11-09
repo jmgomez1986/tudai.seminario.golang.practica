@@ -3,6 +3,9 @@ package pkgbookstore
 import (
 	"errors"
 	"fmt"
+	"os"
+	"io/ioutil"
+	"encoding/json"
 )
 
 // Book ...
@@ -66,4 +69,35 @@ func (bs BookStore) UpdateByID(b Book) (error) {
 		return nil
 	}
 	return errors.New("element is missing")	
+}
+
+// CreateFile ...
+func CreateFile(filename string,) (*os.File	, error) {
+	file, err := os.Create(filename)
+	if err != nil {
+			return nil, errors.New("file not was created")	
+	}
+
+	return file, nil
+}
+
+// WriteFile ...
+	func WriteFile(file *os.File, b *Book) (int, error) {
+
+	data, _ := json.MarshalIndent(b, "", " ")
+	n, err := file.WriteString(string(data) + "\n")
+	if err != nil {
+		file.Close()
+		return 0, errors.New("file not was writing")	
+	}
+	return n, nil
+}
+
+// ReadFile ...
+func ReadFile(filename string) ([]byte, error) {
+	data, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, errors.New("the file cannot be read")	
+	}
+	return data, nil
 }
