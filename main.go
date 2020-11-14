@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"tudai.seminario.golang.practica/internal/pkgbookstore"
 )
 
@@ -44,6 +45,10 @@ func main() {
 	var findBookID = 456
 	var deleteBookID = 456
 
+	/*******************************************************************************/
+	/********************************** CRUD ***************************************/
+	/*******************************************************************************/
+
 	fmt.Println("\n------------------------ CREATE ------------------------")
 	bookStore := pkgbookstore.NewBookStore()
 	bookStore.Add(*newBook)
@@ -83,74 +88,76 @@ func main() {
 	}
 	bookStore.Print()
 	fmt.Println("")
-	
+
+	/*******************************************************************************/
+	/**************************** Write/Read File **********************************/
 	/*******************************************************************************/
 
-	newBook4 := &pkgbookstore.Book{
-		ID:        1,
-		Name:      "It",
-		Language:  "Spanish",
-		Status:    "New",
-		Genre:     "Terror",
-		Editorial: "Plaza&James",
-		Author:    "Stephen King",
-		Price:     1300,
-	}
+	// newBook4 := &pkgbookstore.Book{
+	// 	ID:        1,
+	// 	Name:      "It",
+	// 	Language:  "Spanish",
+	// 	Status:    "New",
+	// 	Genre:     "Terror",
+	// 	Editorial: "Plaza&James",
+	// 	Author:    "Stephen King",
+	// 	Price:     1300,
+	// }
 
-	newBook5 := &pkgbookstore.Book{
-		ID:        2,
-		Name:      "Salem`s Lot",
-		Language:  "Spanish",
-		Status:    "New",
-		Genre:     "Terror",
-		Editorial: "Plaza&James",
-		Author:    "Stephen King",
-		Price:     1500,
-	}
+	// newBook5 := &pkgbookstore.Book{
+	// 	ID:        2,
+	// 	Name:      "Salem`s Lot",
+	// 	Language:  "Spanish",
+	// 	Status:    "New",
+	// 	Genre:     "Terror",
+	// 	Editorial: "Plaza&James",
+	// 	Author:    "Stephen King",
+	// 	Price:     1500,
+	// }
 
-	newBook6 := &pkgbookstore.Book{
-		ID:        3,
-		Name:      "Salem`s Lot",
-		Language:  "Spanish",
-		Status:    "New",
-		Genre:     "Terror",
-		Editorial: "Plaza&James",
-		Author:    "Stephen King",
-		Price:     1500,
-	}
+	// newBook6 := &pkgbookstore.Book{
+	// 	ID:        3,
+	// 	Name:      "Salem`s Lot",
+	// 	Language:  "Spanish",
+	// 	Status:    "New",
+	// 	Genre:     "Terror",
+	// 	Editorial: "Plaza&James",
+	// 	Author:    "Stephen King",
+	// 	Price:     1500,
+	// }
 
-	bookStore2 := pkgbookstore.NewBookStore()
-	bookStore2.Add(*newBook4)
-	bookStore2.Add(*newBook5)
-	bookStore2.Add(*newBook6)
+	// bookStore2 := pkgbookstore.NewBookStore()
+	// bookStore2.Add(*newBook4)
+	// bookStore2.Add(*newBook5)
+	// bookStore2.Add(*newBook6)
 
-	var filename = "files/test.txt"
+	// var filename = "files/test.txt"
 
-	file, err := pkgbookstore.CreateFile(filename);
-	if err != nil {
-		fmt.Println(err)
-	}
+	// file, err := pkgbookstore.CreateFile(filename);
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
 
-	for _, b := range bookStore2.Books {
-		l, err := pkgbookstore.WriteFile(file, b)
-		fmt.Println(l, "bytes written successfully")
-		if err != nil {
-			fmt.Println(err)
-		}
-	}
+	// for _, b := range bookStore2.Books {
+	// 	l, err := pkgbookstore.WriteFile(file, b)
+	// 	fmt.Println(l, "bytes written successfully")
+	// 	if err != nil {
+	// 		fmt.Println(err)
+	// 	}
+	// }
 
-	defer file.Close()
+	// defer file.Close()
 
-	err = file.Close()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	// err = file.Close()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
 
-	data, err := pkgbookstore.ReadFile(filename)
-	if err != nil {
-		fmt.Println(err)
-	}
+	// data, err := pkgbookstore.ReadFile(filename)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
 
-	fmt.Println(string(data))
+	// fmt.Println(string(data))
 }
