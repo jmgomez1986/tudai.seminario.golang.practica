@@ -5,7 +5,7 @@ import (
 	"tudai.seminario.golang.practica/internal/config"
 )
 
-// Book
+// Book ...
 type Book struct {
 	ID        int
 	Name      string

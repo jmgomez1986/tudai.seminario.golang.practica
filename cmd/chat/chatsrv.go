@@ -7,6 +7,7 @@ import (
 
 	// "time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	"tudai.seminario.golang.practica/internal/config"
 	"tudai.seminario.golang.practica/internal/database"
@@ -14,14 +15,7 @@ import (
 )
 
 func main() {
-	configFile := flag.String("config", "./config/config.yaml", "this is the service config")
-	flag.Parse()
-
-	cfg, err := config.LoadConfig(*configFile)
-	// if err != nil {
-	// 	fmt.Println(err.Error())
-	// 	os.Exit(1)
-	// }
+	cfg := readConfig()
 
 	// fmt.Println(cfg.DB.Driver)
 	// fmt.Println(cfg.Version)
@@ -39,15 +33,27 @@ func main() {
 	// }
 
 	service, err := chat.New(db, cfg)
-	for _, m := range service.FindAll() {
-		fmt.Println(*m)
+	// for _, m := range service.FindAll() {
+	// 	fmt.Println(*m)
+	// }
+
+	httpService := chat.NewHTTPTransport(service)
+
+	r := gin.Default()
+	httpService.Register(r)
+	r.Run()
+}
+
+func readConfig() *config.Config {
+	configFile := flag.String("config", "./config/config.yaml", "this is the service config")
+	flag.Parse()
+
+	cfg, err := config.LoadConfig(*configFile)
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
 	}
-
-	// httpService := chat.NewHTTPTransport(service)
-
-	// r := gin.Default()
-	// httpService.Register(r)
-	// r.Run()
+	return cfg
 }
 
 func createSchema(db *sqlx.DB) error {
