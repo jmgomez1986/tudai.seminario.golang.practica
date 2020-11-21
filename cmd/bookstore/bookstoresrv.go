@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	// "time"
-
+	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	"tudai.seminario.golang.practica/internal/config"
 	"tudai.seminario.golang.practica/internal/database"
@@ -14,17 +13,7 @@ import (
 )
 
 func main() {
-	configFile := flag.String("config", "./config/config.yaml", "this is the service config")
-	flag.Parse()
-
-	cfg, err := config.LoadConfig(*configFile)
-	// if err != nil {
-	// 	fmt.Println(err.Error())
-	// 	os.Exit(1)
-	// }
-
-	// fmt.Println(cfg.DB.Driver)
-	// fmt.Println(cfg.Version)
+	cfg := readConfig()
 
 	db, err := database.NewDatabase(cfg)
 	defer db.Close()
@@ -34,29 +23,41 @@ func main() {
 		os.Exit(1)
 	}
 
-	// if err := createSchema(db); err != nil {
-	// 	panic(err)
-	// }
+	if err := createSchema(db); err != nil {
+		panic(err)
+	}
 
 	service, err := chat.New(db, cfg)
 	for _, m := range service.FindAll() {
 		fmt.Println(*m)
 	}
 
-	// httpService := chat.NewHTTPTransport(service)
+	book := service.FindByID(1)
+	fmt.Println(*book)
 
-	// r := gin.Default()
-	// httpService.Register(r)
-	// r.Run()
+	httpService := chat.NewHTTPTransport(service)
+
+	r := gin.Default()
+	httpService.Register(r)
+	r.Run()
+}
+
+func readConfig() *config.Config {
+	configFile := flag.String("config", "./config/config.yaml", "this is the service config")
+	flag.Parse()
+
+	cfg, err := config.LoadConfig(*configFile)
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	return cfg
 }
 
 func createSchema(db *sqlx.DB) error {
-	// schema := `CREATE TABLE IF NOT EXISTS messages (
-	// 	id integer primary key autoincrement,
-	// 	text varchar);`
 
 	schema := `CREATE TABLE IF NOT EXISTS book (
-								id        integer NOT NULL CONSTRAINT book_pk PRIMARY KEY,
+								id        integer     NOT NULL PRIMARY KEY autoincrement,
 								name      varchar(50) NOT NULL,
 								language  varchar(50) NOT NULL,
 								status    varchar(15) NOT NULL,
@@ -74,10 +75,6 @@ func createSchema(db *sqlx.DB) error {
 	}
 
 	// or, you can use MustExec, which panics on error
-	// insertMessage := `INSERT INTO messages (text) VALUES (?)`
-	// s := fmt.Sprintf("Message number %v", time.Now().Nanosecond())
-	// db.MustExec(insertMessage, s)
-
 	insertBook := `INSERT INTO book (name, language, status, genre, editorial, author, publicado, price)
 										VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
 	db.MustExec(insertBook, "Carrie", "Es", "New", "Terror", "DeBolsillo", "Stephen King", "05-04-1974", "150,99")

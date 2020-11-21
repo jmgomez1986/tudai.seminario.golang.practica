@@ -6,7 +6,8 @@
  "Genre": "Terror",
  "Editorial": "Plaza\u0026James",
  "Author": "Stephen King",
- "Price": 1300
+ "Publicado": "01-07-1986",
+ "Price": 1300.99
 }
 {
  "ID": 2,
@@ -16,15 +17,17 @@
  "Genre": "Terror",
  "Editorial": "Plaza\u0026James",
  "Author": "Stephen King",
+ "Publicado": "17-10-1975",
  "Price": 1500
 }
 {
  "ID": 3,
- "Name": "Salem`s Lot",
+ "Name": "Carrie",
  "Language": "Spanish",
  "Status": "New",
  "Genre": "Terror",
  "Editorial": "Plaza\u0026James",
  "Author": "Stephen King",
- "Price": 1500
+ "Publicado": "05-04-1974",
+ "Price": 1750.5
 }
