@@ -5,17 +5,24 @@ import (
 	"tudai.seminario.golang.practica/internal/config"
 )
 
-// Message ...
-type Message struct {
-	ID   int64
-	Text string
+// Book
+type Book struct {
+	ID        int
+	Name      string
+	Language  string
+	Status    string
+	Genre     string
+	Editorial string
+	Author    string
+	Publicado string
+	Price     string
 }
 
-// ChatService ...
-type ChatService interface {
-	AddMessage(Message) error
-	FindByID(int)       *Message
-	FindAll()           []*Message
+// BookService ...
+type BookService interface {
+	FindAll()           []*Book
+	FindByID(int)       *Book
+	AddBook(Book) error
 }
 
 type service struct {
@@ -24,21 +31,21 @@ type service struct {
 }
 
 // New ...
-func New(db *sqlx.DB, c *config.Config) (ChatService, error) {
+func New(db *sqlx.DB, c *config.Config) (BookService, error) {
 	return service{db, c}, nil
 }
 
-func (s service) AddMessage(m Message) error {
+func (s service) AddBook(m Book) error {
 	return nil
 }
 
-func (s service) FindByID(ID int) *Message {
+func (s service) FindByID(ID int) *Book {
 	return nil
 }
 
-func (s service) FindAll() []*Message {
-	var list []*Message
-	if err := s.db.Select(&list, "SELECT * FROM messages"); err != nil {
+func (s service) FindAll() []*Book {
+	var list []*Book
+	if err := s.db.Select(&list, "SELECT * FROM book"); err != nil {
 		panic(err)
 	}
 	return list

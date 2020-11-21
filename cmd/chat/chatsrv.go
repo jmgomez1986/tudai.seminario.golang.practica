@@ -4,7 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"time"
+
+	// "time"
 
 	"github.com/jmoiron/sqlx"
 	"tudai.seminario.golang.practica/internal/config"
@@ -33,9 +34,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err := createSchema(db); err != nil {
-		panic(err)
-	}
+	// if err := createSchema(db); err != nil {
+	// 	panic(err)
+	// }
 
 	service, err := chat.New(db, cfg)
 	for _, m := range service.FindAll() {
@@ -50,9 +51,21 @@ func main() {
 }
 
 func createSchema(db *sqlx.DB) error {
-	schema := `CREATE TABLE IF NOT EXISTS messages (
-		id integer primary key autoincrement,
-		text varchar);`
+	// schema := `CREATE TABLE IF NOT EXISTS messages (
+	// 	id integer primary key autoincrement,
+	// 	text varchar);`
+
+	schema := `CREATE TABLE IF NOT EXISTS book (
+								id        integer NOT NULL CONSTRAINT book_pk PRIMARY KEY,
+								name      varchar(50) NOT NULL,
+								language  varchar(50) NOT NULL,
+								status    varchar(15) NOT NULL,
+								genre     varchar(35) NOT NULL,
+								editorial varchar(50) NOT NULL,
+								author    varchar(30) NOT NULL,
+								publicado varchar(10) NOT NULL,
+								price     varchar     NOT NULL
+							);`
 
 	// execute a query on the server
 	_, err := db.Exec(schema)
@@ -61,8 +74,13 @@ func createSchema(db *sqlx.DB) error {
 	}
 
 	// or, you can use MustExec, which panics on error
-	insertMessage := `INSERT INTO messages (text) VALUES (?)`
-	s := fmt.Sprintf("Message number %v", time.Now().Nanosecond())
-	db.MustExec(insertMessage, s)
+	// insertMessage := `INSERT INTO messages (text) VALUES (?)`
+	// s := fmt.Sprintf("Message number %v", time.Now().Nanosecond())
+	// db.MustExec(insertMessage, s)
+
+	insertBook := `INSERT INTO book (name, language, status, genre, editorial, author, publicado, price)
+										VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+	db.MustExec(insertBook, "Carrie", "Es", "New", "Terror", "DeBolsillo", "Stephen King", "05-04-1974", "150,99")
+
 	return nil
 }
