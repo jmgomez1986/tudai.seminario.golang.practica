@@ -9,7 +9,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"tudai.seminario.golang.practica/internal/config"
 	"tudai.seminario.golang.practica/internal/database"
-	"tudai.seminario.golang.practica/internal/service/chat"
+	"tudai.seminario.golang.practica/internal/service/bookstore"
 )
 
 func main() {
@@ -23,19 +23,20 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err := createSchema(db); err != nil {
-		panic(err)
-	}
+	// if err := createSchema(db); err != nil {
+	// 	panic(err)
+	// }
 
-	service, err := chat.New(db, cfg)
-	for _, m := range service.FindAll() {
-		fmt.Println(*m)
-	}
+	service, err := bookstore.New(db, cfg)
 
-	book := service.FindByID(1)
-	fmt.Println(*book)
+	// for _, m := range service.FindAll() {
+	// 	fmt.Println(*m)
+	// }
 
-	httpService := chat.NewHTTPTransport(service)
+	// book := service.FindByID(1)
+	// fmt.Println(*book)
+
+	httpService := bookstore.NewHTTPTransport(service)
 
 	r := gin.Default()
 	httpService.Register(r)
@@ -73,11 +74,6 @@ func createSchema(db *sqlx.DB) error {
 	if err != nil {
 		return err
 	}
-
-	// or, you can use MustExec, which panics on error
-	insertBook := `INSERT INTO book (name, language, status, genre, editorial, author, publicado, price)
-										VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-	db.MustExec(insertBook, "Carrie", "Es", "New", "Terror", "DeBolsillo", "Stephen King", "05-04-1974", "150,99")
 
 	return nil
 }

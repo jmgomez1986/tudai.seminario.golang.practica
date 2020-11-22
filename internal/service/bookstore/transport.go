@@ -1,4 +1,4 @@
-package chat
+package bookstore
 
 import (
 	"net/http"
@@ -22,6 +22,11 @@ type httpService struct {
 	endpoints []*endpoint
 }
 
+// ErrorStruct ...
+type ErrorStruct struct {
+	Message string `json:"message"`
+}
+
 // NewHTTPTransport ...
 func NewHTTPTransport(s BookService) HTTPService {
 	endpoints := makeEndpoints(s)
@@ -43,6 +48,12 @@ func makeEndpoints(s BookService) []*endpoint {
 		function: getBookByID(s),
 	})
 
+	list = append(list, &endpoint{
+		method:   "POST",
+		path:     "/book",
+		function: postBook(s),
+	})
+
 	return list
 }
 
@@ -55,10 +66,44 @@ func getBookAll(s BookService) gin.HandlerFunc {
 }
 
 func getBookByID(s BookService) gin.HandlerFunc {
+	var httpErrorMsg *ErrorStruct
+
 	return func(c *gin.Context) {
-		ID, _ := strconv.Atoi(c.Param("id"))
+		ID, errAtoi := strconv.Atoi(c.Param("id"))
+		result, errFindByID := s.FindByID(ID)
+
+		if errAtoi != nil {
+			httpErrorMsg = &ErrorStruct{Message: errAtoi.Error()}
+		}
+
+		if errFindByID != nil {
+			httpErrorMsg = &ErrorStruct{Message: errFindByID.Error()}
+		}
+
+		if errAtoi != nil || errFindByID != nil {
+			c.JSON(http.StatusNotFound, gin.H{
+				"Error": httpErrorMsg,
+			})
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"book": *result,
+			})
+		}
+	}
+}
+
+func postBook(s BookService) gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+		var book Book
+
+		queryResult := s.AddBook(book)
+		lastInsertID, _ := queryResult.LastInsertId()
+
+		c.BindJSON(&book)
+
 		c.JSON(http.StatusOK, gin.H{
-			"book": s.FindByID(ID),
+			"Created book ID": lastInsertID,
 		})
 	}
 }
