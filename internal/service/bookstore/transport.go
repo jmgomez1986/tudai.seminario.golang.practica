@@ -60,6 +60,12 @@ func makeEndpoints(s BookService) []*endpoint {
 		function: deleteBook(s),
 	})
 
+	list = append(list, &endpoint{
+		method:   "PUT",
+		path:     "/book/:id",
+		function: updateBook(s),
+	})
+
 	return list
 }
 
@@ -103,7 +109,7 @@ func postBook(s BookService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var book Book
 
-		c.BindJSON(&book)	
+		c.BindJSON(&book)
 		queryResult, err := s.AddBook(book)
 
 		if err != nil {
@@ -112,7 +118,7 @@ func postBook(s BookService) gin.HandlerFunc {
 				"Error": httpErrorMsg,
 			})
 		} else {
-			lastInsertID, _ := queryResult.LastInsertId()	
+			lastInsertID, _ := queryResult.LastInsertId()
 			c.JSON(http.StatusOK, gin.H{
 				"Created book with ID": lastInsertID,
 			})
@@ -141,11 +147,43 @@ func deleteBook(s BookService) gin.HandlerFunc {
 				"Error": httpErrorMsg,
 			})
 		} else {
-			rowsAffected, _ := queryResult.RowsAffected()	
+			rowsAffected, _ := queryResult.RowsAffected()
 			c.JSON(http.StatusOK, gin.H{
 				"Deleted books": rowsAffected,
 			})
 		}
+	}
+}
+
+func updateBook(s BookService) gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+		var book Book
+		var httpErrorMsg *ErrorStruct
+
+		ID, errAtoi := strconv.Atoi(c.Param("id"))
+
+		c.BindJSON(&book)
+		queryResult, err := s.UpdateBook(ID, book)
+
+		if errAtoi != nil {
+			httpErrorMsg = &ErrorStruct{Message: errAtoi.Error()}
+		}
+		if err != nil {
+			httpErrorMsg = &ErrorStruct{Message: err.Error()}
+		}
+
+		if errAtoi != nil || err != nil {
+			c.JSON(http.StatusNotFound, gin.H{
+				"Error": httpErrorMsg,
+			})
+		} else {
+			rowsAffected, _ := queryResult.RowsAffected()
+			c.JSON(http.StatusOK, gin.H{
+				"Updated books": rowsAffected,
+			})
+		}
+
 	}
 }
 

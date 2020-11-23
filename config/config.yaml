@@ -1,7 +1,7 @@
 db:
   type: "sqlite3"
   driver: "sqlite3"
-  conn: "./test/data.db"
+  conn: "./sqliteDB/data.db"
 # greeter:
 #   version: /v1
 version: 0.1.0

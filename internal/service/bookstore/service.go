@@ -2,7 +2,6 @@ package bookstore
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/jmoiron/sqlx"
 	"tudai.seminario.golang.practica/internal/config"
@@ -27,6 +26,7 @@ type BookService interface {
 	FindByID(int) (*Book, error)
 	AddBook(Book) (sql.Result, error)
 	DeleteBook(int) (sql.Result, error)
+	UpdateBook(int, Book) (sql.Result, error)
 }
 type service struct {
 	db   *sqlx.DB
@@ -39,14 +39,28 @@ func New(db *sqlx.DB, c *config.Config) (BookService, error) {
 }
 
 func (s service) AddBook(book Book) (sql.Result, error) {
-	fmt.Printf("\nBody: %v\n\n", book)
 
-	queryInsertBook := `INSERT INTO books (name, language, status, genre, editorial, author, publicado, price)
-										VALUES (:name, :language, :status, :genre, :editorial, :author, :publicado, :price)`
+	sqlStatement := `INSERT INTO books (
+													name,
+													language,
+													status,
+													genre,
+													editorial,
+													author,
+													publicado,
+													price
+												)
+												VALUES (
+													:name,
+													:language,
+													:status, :genre,
+													:editorial,
+													:author,
+													:publicado,
+													:price
+												);`
 
-	result, err := s.db.NamedExec(queryInsertBook, &book)
-
-	// result, err := s.db.Exec(queryInsertBook, &book.Name, &book.Language, &book.Status, &book.Genre, &book.Editorial, &book.Author, &book.Publicado, &book.Price)
+	result, err := s.db.NamedExec(sqlStatement, &book)
 
 	if err != nil {
 		return nil, err
@@ -56,8 +70,10 @@ func (s service) AddBook(book Book) (sql.Result, error) {
 
 func (s service) FindByID(ID int) (*Book, error) {
 	var book Book
+	sqlStatement := `SELECT * FROM books WHERE id=?;`
 
-	err := s.db.QueryRowx("SELECT * FROM books WHERE id=?", ID).StructScan(&book)
+	err := s.db.QueryRowx(sqlStatement, ID).StructScan(&book)
+
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +83,9 @@ func (s service) FindByID(ID int) (*Book, error) {
 
 func (s service) FindAll() []*Book {
 	var list []*Book
-	if err := s.db.Select(&list, "SELECT * FROM books"); err != nil {
+	sqlStatement := `SELECT * FROM books;`
+
+	if err := s.db.Select(&list, sqlStatement); err != nil {
 		panic(err)
 	}
 	return list
@@ -75,7 +93,35 @@ func (s service) FindAll() []*Book {
 
 func (s service) DeleteBook(ID int) (sql.Result, error) {
 
-	result, err := s.db.Exec("DELETE FROM books WHERE id=?;", ID)
+	sqlStatement := `DELETE FROM books WHERE id=?;`
+
+	result, err := s.db.Exec(sqlStatement, ID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (s service) UpdateBook(ID int, book Book) (sql.Result, error) {
+
+	book.ID = ID
+
+	sqlStatement := `UPDATE books
+										SET
+											name=:name,
+											language=:language,
+											status=:status,
+											genre=:genre,
+											editorial=:editorial,
+											author=:author,
+											publicado=:publicado,
+											price=:price
+										WHERE id=:id;`
+
+	result, err := s.db.NamedExec(sqlStatement, &book)
+
 	if err != nil {
 		return nil, err
 	}
