@@ -1,4 +1,4 @@
-package pkgbookstore
+package crudbookstore
 
 import (
 	"testing"
@@ -13,7 +13,7 @@ func TestBookStoreAdd(t *testing.T) {
 	if bookFinded != nil {
 		t.Errorf("El libro con el ID %d ya existe!!!\n", bookID)
 	}
-	
+
 	newBook := &Book{
 		ID:        123,
 		Name:      "It",
@@ -28,8 +28,8 @@ func TestBookStoreAdd(t *testing.T) {
 	bookFinded = bookStore.FindByID(bookID)
 	if bookFinded == nil {
 		t.Errorf("El libro con el ID %d no fue agregado!!!\n", bookID)
-	}	
-	
+	}
+
 	if bookFinded.Name != newBook.Name {
 		t.Errorf("El libro con el ID %d no tiene el nombre de la consulta", bookID)
 	}

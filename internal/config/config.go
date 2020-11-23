@@ -13,16 +13,10 @@ type DbConfig struct {
 	Conn   string `yaml:"conn"`
 }
 
-// // GreeterConfig ...
-// type GreeterConfig struct {
-// 	Version string `yaml:"version"`
-// }
-
 // Config ...
 type Config struct {
-	DB      DbConfig      `yaml:"db"`
-	Version string        `yaml:"version"`
-	// Greeter GreeterConfig `yaml:"greeter"`
+	DB      DbConfig `yaml:"db"`
+	Version string   `yaml:"version"`
 }
 
 // LoadConfig ...

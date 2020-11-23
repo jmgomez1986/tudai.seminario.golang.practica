@@ -1,11 +1,11 @@
-package pkgbookstore
+package crudbookstore
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
-	"os"
 	"io/ioutil"
-	"encoding/json"
+	"os"
 )
 
 // Book ...
@@ -17,7 +17,8 @@ type Book struct {
 	Genre     string
 	Editorial string
 	Author    string
-	Price     int
+	Publicado string
+	Price     float32
 }
 
 // BookStore ...
@@ -47,7 +48,7 @@ func (bs BookStore) Print() {
 }
 
 // Delete ...
-func (bs BookStore) Delete(ID int) (error) {
+func (bs BookStore) Delete(ID int) error {
 	_, ok := bs.Books[ID]
 	if ok {
 		delete(bs.Books, ID)
@@ -62,33 +63,33 @@ func (bs BookStore) FindByID(ID int) *Book {
 }
 
 // UpdateByID ... Update book replacing
-func (bs BookStore) UpdateByID(b Book) (error) {
+func (bs BookStore) UpdateByID(b Book) error {
 	_, ok := bs.Books[b.ID]
 	if ok {
 		bs.Books[b.ID] = &b
 		return nil
 	}
-	return errors.New("element is missing")	
+	return errors.New("element is missing")
 }
 
 // CreateFile ...
-func CreateFile(filename string,) (*os.File	, error) {
+func CreateFile(filename string) (*os.File, error) {
 	file, err := os.Create(filename)
 	if err != nil {
-			return nil, errors.New("file not was created")	
+		return nil, errors.New("file not was created")
 	}
 
 	return file, nil
 }
 
 // WriteFile ...
-	func WriteFile(file *os.File, b *Book) (int, error) {
+func WriteFile(file *os.File, b *Book) (int, error) {
 
 	data, _ := json.MarshalIndent(b, "", " ")
 	n, err := file.WriteString(string(data) + "\n")
 	if err != nil {
 		file.Close()
-		return 0, errors.New("file not was writing")	
+		return 0, errors.New("file not was writing")
 	}
 	return n, nil
 }
@@ -97,7 +98,7 @@ func CreateFile(filename string,) (*os.File	, error) {
 func ReadFile(filename string) ([]byte, error) {
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return nil, errors.New("the file cannot be read")	
+		return nil, errors.New("the file cannot be read")
 	}
 	return data, nil
 }

@@ -5,20 +5,15 @@ import (
 	"fmt"
 	"os"
 
-	// "time"
-
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	"tudai.seminario.golang.practica/internal/config"
 	"tudai.seminario.golang.practica/internal/database"
-	"tudai.seminario.golang.practica/internal/service/chat"
+	"tudai.seminario.golang.practica/internal/service/bookstore"
 )
 
 func main() {
 	cfg := readConfig()
-
-	// fmt.Println(cfg.DB.Driver)
-	// fmt.Println(cfg.Version)
 
 	db, err := database.NewDatabase(cfg)
 	defer db.Close()
@@ -32,24 +27,28 @@ func main() {
 	// 	panic(err)
 	// }
 
+<<<<<<< HEAD:cmd/chat/chatsrv.go
 	service, err := chat.New(db, cfg)
 	// for _, m := range service.FindAll() {
 	// 	fmt.Println(*m)
 	// }
 
-	httpService := chat.NewHTTPTransport(service)
+	// book := service.FindByID(1)
+	// fmt.Println(*book)
+
+	httpService := bookstore.NewHTTPTransport(service)
 
 	r := gin.Default()
 	httpService.Register(r)
 	r.Run()
 }
 
+>>>>>>> eea366d506ab2a0f028e5fda879b8a2a01815f37:cmd/bookstoresrv/bookstoresrv.go
 func readConfig() *config.Config {
 	configFile := flag.String("config", "./config/config.yaml", "this is the service config")
 	flag.Parse()
 
 	cfg, err := config.LoadConfig(*configFile)
-	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
@@ -57,12 +56,9 @@ func readConfig() *config.Config {
 }
 
 func createSchema(db *sqlx.DB) error {
-	// schema := `CREATE TABLE IF NOT EXISTS messages (
-	// 	id integer primary key autoincrement,
-	// 	text varchar);`
 
 	schema := `CREATE TABLE IF NOT EXISTS book (
-								id        integer NOT NULL CONSTRAINT book_pk PRIMARY KEY,
+								id        integer     NOT NULL PRIMARY KEY autoincrement,
 								name      varchar(50) NOT NULL,
 								language  varchar(50) NOT NULL,
 								status    varchar(15) NOT NULL,
@@ -78,15 +74,6 @@ func createSchema(db *sqlx.DB) error {
 	if err != nil {
 		return err
 	}
-
-	// or, you can use MustExec, which panics on error
-	// insertMessage := `INSERT INTO messages (text) VALUES (?)`
-	// s := fmt.Sprintf("Message number %v", time.Now().Nanosecond())
-	// db.MustExec(insertMessage, s)
-
-	insertBook := `INSERT INTO book (name, language, status, genre, editorial, author, publicado, price)
-										VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-	db.MustExec(insertBook, "Carrie", "Es", "New", "Terror", "DeBolsillo", "Stephen King", "05-04-1974", "150,99")
 
 	return nil
 }
