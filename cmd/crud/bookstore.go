@@ -125,7 +125,7 @@ func main() {
 		Language:  "Spanish",
 		Status:    "New",
 		Genre:     "Terror",
-		Editorial: "Plaza&James",
+		Editorial: `Plaza&James`,
 		Author:    "Stephen King",
 		Publicado: "05-04-1974",
 		Price:     1750.50,

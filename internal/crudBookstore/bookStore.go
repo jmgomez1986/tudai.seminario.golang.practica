@@ -1,6 +1,7 @@
 package crudbookstore
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -84,9 +85,19 @@ func CreateFile(filename string) (*os.File, error) {
 
 // WriteFile ...
 func WriteFile(file *os.File, b *Book) (int, error) {
+	// data, _ := json.Marshal(b)
+	// stringData := strings.Replace(string(data), "\u0026", "&", -1)
+	// fmt.Println(stringData)
+	// n, err := file.WriteString(stringData + "\n")
 
-	data, _ := json.MarshalIndent(b, "", " ")
-	n, err := file.WriteString(string(data) + "\n")
+	bf := bytes.NewBuffer([]byte{})
+	jsonEncoder := json.NewEncoder(bf)
+	jsonEncoder.SetEscapeHTML(false)
+	jsonEncoder.SetIndent("", " ")
+	jsonEncoder.Encode(b)
+
+	n, err := file.WriteString(bf.String() + "\n")
+
 	if err != nil {
 		file.Close()
 		return 0, errors.New("file not was writing")
