@@ -164,5 +164,5 @@ func main() {
 		fmt.Println(err)
 	}
 
-	fmt.Println(string(data))
+	fmt.Println(data)
 }

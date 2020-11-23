@@ -106,10 +106,10 @@ func WriteFile(file *os.File, b *Book) (int, error) {
 }
 
 // ReadFile ...
-func ReadFile(filename string) ([]byte, error) {
+func ReadFile(filename string) (string, error) {
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return nil, errors.New("the file cannot be read")
+		return "", errors.New("the file cannot be read")
 	}
-	return data, nil
+	return string(data), nil
 }
