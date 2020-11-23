@@ -23,12 +23,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	// if err := createSchema(db); err != nil {
-	// 	panic(err)
-	// }
+	if err := createSchema(db); err != nil {
+		panic(err)
+	}
 
-<<<<<<< HEAD:cmd/chat/chatsrv.go
-	service, err := chat.New(db, cfg)
+	service, err := bookstore.New(db, cfg)
+
 	// for _, m := range service.FindAll() {
 	// 	fmt.Println(*m)
 	// }
@@ -43,12 +43,12 @@ func main() {
 	r.Run()
 }
 
->>>>>>> eea366d506ab2a0f028e5fda879b8a2a01815f37:cmd/bookstoresrv/bookstoresrv.go
 func readConfig() *config.Config {
 	configFile := flag.String("config", "./config/config.yaml", "this is the service config")
 	flag.Parse()
 
 	cfg, err := config.LoadConfig(*configFile)
+	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
@@ -57,7 +57,7 @@ func readConfig() *config.Config {
 
 func createSchema(db *sqlx.DB) error {
 
-	schema := `CREATE TABLE IF NOT EXISTS book (
+	schema := `CREATE TABLE IF NOT EXISTS books (
 								id        integer     NOT NULL PRIMARY KEY autoincrement,
 								name      varchar(50) NOT NULL,
 								language  varchar(50) NOT NULL,

@@ -25,7 +25,8 @@ type Book struct {
 type BookService interface {
 	FindAll() []*Book
 	FindByID(int) (*Book, error)
-	AddBook(Book) sql.Result
+	AddBook(Book) (sql.Result, error)
+	DeleteBook(int) (sql.Result, error)
 }
 type service struct {
 	db   *sqlx.DB
@@ -37,21 +38,26 @@ func New(db *sqlx.DB, c *config.Config) (BookService, error) {
 	return service{db, c}, nil
 }
 
-func (s service) AddBook(book Book) sql.Result {
+func (s service) AddBook(book Book) (sql.Result, error) {
 	fmt.Printf("\nBody: %v\n\n", book)
 
-	queryInsertBook := `INSERT INTO book (name, language, status, genre, editorial, author, publicado, price)
-										VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+	queryInsertBook := `INSERT INTO books (name, language, status, genre, editorial, author, publicado, price)
+										VALUES (:name, :language, :status, :genre, :editorial, :author, :publicado, :price)`
 
-	result := s.db.MustExec(queryInsertBook, &book.Name, &book.Language, &book.Status, &book.Genre, &book.Editorial, &book.Author, &book.Publicado, &book.Price)
+	result, err := s.db.NamedExec(queryInsertBook, &book)
 
-	return result
+	// result, err := s.db.Exec(queryInsertBook, &book.Name, &book.Language, &book.Status, &book.Genre, &book.Editorial, &book.Author, &book.Publicado, &book.Price)
+
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
 func (s service) FindByID(ID int) (*Book, error) {
 	var book Book
 
-	err := s.db.QueryRowx("SELECT * FROM book WHERE id=?", ID).StructScan(&book)
+	err := s.db.QueryRowx("SELECT * FROM books WHERE id=?", ID).StructScan(&book)
 	if err != nil {
 		return nil, err
 	}
@@ -61,8 +67,18 @@ func (s service) FindByID(ID int) (*Book, error) {
 
 func (s service) FindAll() []*Book {
 	var list []*Book
-	if err := s.db.Select(&list, "SELECT * FROM book"); err != nil {
+	if err := s.db.Select(&list, "SELECT * FROM books"); err != nil {
 		panic(err)
 	}
 	return list
+}
+
+func (s service) DeleteBook(ID int) (sql.Result, error) {
+
+	result, err := s.db.Exec("DELETE FROM books WHERE id=?;", ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
