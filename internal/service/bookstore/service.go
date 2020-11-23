@@ -9,15 +9,15 @@ import (
 
 // Book ...
 type Book struct {
-	ID        int    `json:"id"`
-	Name      string `json:"name"`
-	Language  string `json:"language"`
-	Status    string `json:"status"`
-	Genre     string `json:"genre"`
-	Editorial string `json:"editorial"`
-	Author    string `json:"author"`
-	Publicado string `json:"publicado"`
-	Price     string `json:"price"`
+	ID        int     `json:"id"`
+	Name      string  `json:"name"`
+	Language  string  `json:"language"`
+	Status    string  `json:"status"`
+	Genre     string  `json:"genre"`
+	Editorial string  `json:"editorial"`
+	Author    string  `json:"author"`
+	Publicado string  `json:"publicado"`
+	Price     float64 `json:"price"`
 }
 
 // BookService ...

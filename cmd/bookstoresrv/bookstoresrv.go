@@ -66,7 +66,7 @@ func createSchema(db *sqlx.DB) error {
 								editorial varchar(50) NOT NULL,
 								author    varchar(30) NOT NULL,
 								publicado varchar(10) NOT NULL,
-								price     varchar     NOT NULL
+								price     float       NOT NULL
 							);`
 
 	// execute a query on the server
