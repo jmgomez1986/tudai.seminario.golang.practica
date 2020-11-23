@@ -29,13 +29,6 @@ func main() {
 
 	service, err := bookstore.New(db, cfg)
 
-	// for _, m := range service.FindAll() {
-	// 	fmt.Println(*m)
-	// }
-
-	// book := service.FindByID(1)
-	// fmt.Println(*book)
-
 	httpService := bookstore.NewHTTPTransport(service)
 
 	r := gin.Default()
@@ -69,7 +62,6 @@ func createSchema(db *sqlx.DB) error {
 								price     float       NOT NULL
 							);`
 
-	// execute a query on the server
 	_, err := db.Exec(schema)
 	if err != nil {
 		return err
