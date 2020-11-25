@@ -62,8 +62,8 @@ func (bs BookStore) FindByID(ID int) *Book {
 	return bs.Books[ID]
 }
 
-// UpdateByID ... Update book replacing
-func (bs BookStore) UpdateByID(b Book) error {
+// Update ... Update book replacing
+func (bs BookStore) Update(b Book) error {
 	_, ok := bs.Books[b.ID]
 	if ok {
 		bs.Books[b.ID] = &b

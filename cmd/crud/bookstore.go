@@ -64,13 +64,13 @@ func main() {
 
 	fmt.Println("\n------------------------ UPDATE ------------------------")
 	newBook2.Price = 3999
-	errUpdate := bookStore.UpdateByID(*newBook2)
+	errUpdate := bookStore.Update(*newBook2)
 	if errUpdate != nil {
 		fmt.Printf("Update Book with id %v: %v\n", newBook2.ID, errUpdate)
 	} else {
 		fmt.Printf("Update Book with id %v was succesfully\n", newBook2.ID)
 	}
-	// errUpdate := bookStore.UpdateByID(newBook3)
+	// errUpdate := bookStore.Update(newBook3)
 	// if errUpdate != nil {
 	// 	fmt.Printf("Update Book with id %v: %v\n", newBook3.ID, errUpdate)
 	// } else {

@@ -7,13 +7,6 @@ import (
 func TestBookStoreAdd(t *testing.T) {
 	var bookID = 1
 
-	bookStore := NewBookStore()
-
-	bookFinded := bookStore.FindByID(bookID)
-	if bookFinded != nil {
-		t.Errorf("El libro con el ID %d ya existe!!!\n", bookID)
-	}
-
 	newBook := &Book{
 		ID:        1,
 		Name:      "It",
@@ -24,6 +17,14 @@ func TestBookStoreAdd(t *testing.T) {
 		Author:    "Stephen King",
 		Price:     1300,
 	}
+
+	bookStore := NewBookStore()
+
+	bookFinded := bookStore.FindByID(bookID)
+	if bookFinded != nil {
+		t.Errorf("El libro con el ID %d ya existe!!!\n", bookID)
+	}
+
 	bookStore.Add(*newBook)
 	bookFinded = bookStore.FindByID(bookID)
 	if bookFinded == nil {
@@ -35,15 +36,8 @@ func TestBookStoreAdd(t *testing.T) {
 	}
 }
 
-func TestBookStoreDelete(t *testing.T) {
+func TestBookStoreRead(t *testing.T) {
 	var bookID = 1
-
-	bookStore := NewBookStore()
-
-	// errDelete1 := bookStore.Delete(bookID)
-	// if errDelete1 != nil {
-	// 	t.Errorf("El libro con el ID %d no puede eliminarse porque no existe!!!\n", bookID)
-	// }
 
 	newBook := &Book{
 		ID:        1,
@@ -55,21 +49,18 @@ func TestBookStoreDelete(t *testing.T) {
 		Author:    "Stephen King",
 		Price:     1300,
 	}
-	bookStore.Add(*newBook)
 
-	errDelete2 := bookStore.Delete(bookID)
-	// if errDelete2 == nil {
-	// 	t.Errorf("El libro con el ID %d se elimino correctamente!!!\n", bookID)
-	// }
-	if errDelete2 != nil {
-		t.Errorf("El libro con el ID %d no se pudo eliminar!!!\n", bookID)
+	bookStore := NewBookStore()
+
+	bookStore.Add(*newBook)
+	bookFinded := bookStore.FindByID(bookID)
+	if bookFinded == nil {
+		t.Errorf("El libro con el ID %d no fue encontrado en la bookstore!!!\n", bookID)
 	}
 }
 
 func TestBookStoreUpdate(t *testing.T) {
-	// var bookID = 1
-
-	bookStore := NewBookStore()
+	var bookID = 1
 
 	newBook := &Book{
 		ID:        1,
@@ -81,13 +72,41 @@ func TestBookStoreUpdate(t *testing.T) {
 		Author:    "Stephen King",
 		Price:     1300,
 	}
+
+	bookStore := NewBookStore()
 	bookStore.Add(*newBook)
 
-	newBook3 := *newBook
-	newBook3.Price = 1500
+	newBook.Price = 1500
 
-	errUpdate2 := bookStore.UpdateByID(newBook3)
-	if errUpdate2 != nil {
-		t.Errorf("El libro con el ID %d no se pudo actualizar!!!\n", newBook3.ID)
+	bookStore.Update(*newBook)
+	bookFinded := bookStore.FindByID(bookID)
+	if bookFinded.Price != 1500 {
+		t.Errorf("El libro con el ID %d no se pudo eliminar!!!\n", bookID)
+	}
+}
+
+func TestBookStoreDelete(t *testing.T) {
+	var bookID = 1
+
+	newBook := &Book{
+		ID:        1,
+		Name:      "It",
+		Language:  "Spanish",
+		Status:    "New",
+		Genre:     "Terror",
+		Editorial: "Plaza&James",
+		Author:    "Stephen King",
+		Price:     1300,
+	}
+
+	bookStore := NewBookStore()
+
+	bookStore.Add(*newBook)
+
+	bookStore.Delete(bookID)
+
+	bookFinded := bookStore.FindByID(bookID)
+	if bookFinded != nil {
+		t.Errorf("El libro con el ID %d no se pudo eliminar!!!\n", bookID)
 	}
 }
