@@ -5,7 +5,7 @@ import (
 )
 
 func TestBookStoreAdd(t *testing.T) {
-	var bookID = 123
+	var bookID = 1
 
 	bookStore := NewBookStore()
 
@@ -15,7 +15,7 @@ func TestBookStoreAdd(t *testing.T) {
 	}
 
 	newBook := &Book{
-		ID:        123,
+		ID:        1,
 		Name:      "It",
 		Language:  "Spanish",
 		Status:    "New",
@@ -35,19 +35,18 @@ func TestBookStoreAdd(t *testing.T) {
 	}
 }
 
-
 func TestBookStoreDelete(t *testing.T) {
-	var bookID = 123
+	var bookID = 1
 
 	bookStore := NewBookStore()
 
-	errDelete1 := bookStore.Delete(bookID)
-	if errDelete1 != nil {
-		t.Logf("The book with ID% d cannot be deleted because it does not exist!!!\n", bookID)
-	}
-	
+	// errDelete1 := bookStore.Delete(bookID)
+	// if errDelete1 != nil {
+	// 	t.Errorf("El libro con el ID %d no puede eliminarse porque no existe!!!\n", bookID)
+	// }
+
 	newBook := &Book{
-		ID:        123,
+		ID:        1,
 		Name:      "It",
 		Language:  "Spanish",
 		Status:    "New",
@@ -57,9 +56,38 @@ func TestBookStoreDelete(t *testing.T) {
 		Price:     1300,
 	}
 	bookStore.Add(*newBook)
-	
+
 	errDelete2 := bookStore.Delete(bookID)
-	if errDelete2 == nil {
-		t.Logf("Delete with id %v was succesfully!!!\n", bookID)
+	// if errDelete2 == nil {
+	// 	t.Errorf("El libro con el ID %d se elimino correctamente!!!\n", bookID)
+	// }
+	if errDelete2 != nil {
+		t.Errorf("El libro con el ID %d no se pudo eliminar!!!\n", bookID)
+	}
+}
+
+func TestBookStoreUpdate(t *testing.T) {
+	// var bookID = 1
+
+	bookStore := NewBookStore()
+
+	newBook := &Book{
+		ID:        1,
+		Name:      "It",
+		Language:  "Spanish",
+		Status:    "New",
+		Genre:     "Terror",
+		Editorial: "Plaza&James",
+		Author:    "Stephen King",
+		Price:     1300,
+	}
+	bookStore.Add(*newBook)
+
+	newBook3 := *newBook
+	newBook3.Price = 1500
+
+	errUpdate2 := bookStore.UpdateByID(newBook3)
+	if errUpdate2 != nil {
+		t.Errorf("El libro con el ID %d no se pudo actualizar!!!\n", newBook3.ID)
 	}
 }

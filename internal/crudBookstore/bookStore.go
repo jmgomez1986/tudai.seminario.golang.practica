@@ -73,7 +73,10 @@ func (bs BookStore) UpdateByID(b Book) error {
 }
 
 // CreateFile ...
-func CreateFile(filename string) (*os.File, error) {
+func CreateFile(path string, filename string) (*os.File, error) {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		os.Mkdir(path, 0777)
+	}
 	file, err := os.Create(filename)
 	if err != nil {
 		return nil, errors.New("file not was created")

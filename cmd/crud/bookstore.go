@@ -133,9 +133,10 @@ func main() {
 	bookStore2.Add(*newBook5)
 	bookStore2.Add(*newBook6)
 
-	var filename = "files/test.txt"
+	var path = "files"
+	var filename = path + "/" + "bookstore.txt"
 
-	file, err := crudbookstore.CreateFile(filename)
+	file, err := crudbookstore.CreateFile(path, filename)
 	if err != nil {
 		fmt.Println(err)
 	}
