@@ -38,9 +38,6 @@ func main() {
 		Price:     1500,
 	}
 
-	// Porque al newBook2 tengo que ponerle * para generar una copia?
-	// Despues cuando el newBook se lo paso al find, tengo que pasalo sin el * a diferencia del newBook2
-	// Porque esa diferencia? Como seria generar una copia para pasarlo como parametro de la misma forma?
 	newBook3 := *newBook2
 	newBook3.ID = 3
 

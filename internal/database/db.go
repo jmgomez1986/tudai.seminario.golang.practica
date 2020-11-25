@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/jmoiron/sqlx"
-	_ "github.com/mattn/go-sqlite3" // adding sqlite driver support
+	_ "github.com/mattn/go-sqlite3"
 	"tudai.seminario.golang.practica/internal/config"
 )
 

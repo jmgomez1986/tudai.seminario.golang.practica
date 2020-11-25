@@ -43,7 +43,6 @@ func (bs BookStore) Add(b Book) {
 // Print ...
 func (bs BookStore) Print() {
 	for k, v := range bs.Books {
-		// fmt.Printf("%v\t[%v]\t%v\n", k, v.ID, v.name)
 		fmt.Printf("%v\t%+v\n", k, *v)
 	}
 }
@@ -85,10 +84,6 @@ func CreateFile(filename string) (*os.File, error) {
 
 // WriteFile ...
 func WriteFile(file *os.File, b *Book) (int, error) {
-	// data, _ := json.Marshal(b)
-	// stringData := strings.Replace(string(data), "\u0026", "&", -1)
-	// fmt.Println(stringData)
-	// n, err := file.WriteString(stringData + "\n")
 
 	bf := bytes.NewBuffer([]byte{})
 	jsonEncoder := json.NewEncoder(bf)
