@@ -75,7 +75,7 @@ func (bs BookStore) UpdateByID(b Book) error {
 // CreateFile ...
 func CreateFile(path string, filename string) (*os.File, error) {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		os.Mkdir(path, 0777)
+		os.Mkdir(path, os.ModePerm)
 	}
 	file, err := os.Create(filename)
 	if err != nil {
