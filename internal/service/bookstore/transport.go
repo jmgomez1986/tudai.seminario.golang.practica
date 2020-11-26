@@ -17,14 +17,13 @@ type endpoint struct {
 	path     string
 	function gin.HandlerFunc
 }
-
 type httpService struct {
 	endpoints []*endpoint
 }
 
-// ErrorStruct ...
-type ErrorStruct struct {
-	Message string `json:"message"`
+//ErrorResponse ...
+type ErrorResponse struct {
+	Message string
 }
 
 // NewHTTPTransport ...
@@ -78,18 +77,18 @@ func getBookAll(s BookService) gin.HandlerFunc {
 }
 
 func getBookByID(s BookService) gin.HandlerFunc {
-	var httpErrorMsg *ErrorStruct
+	var httpErrorMsg *ErrorResponse
 
 	return func(c *gin.Context) {
 		ID, errAtoi := strconv.Atoi(c.Param("id"))
 		result, errFindByID := s.FindByID(ID)
 
 		if errAtoi != nil {
-			httpErrorMsg = &ErrorStruct{Message: errAtoi.Error()}
+			httpErrorMsg = &ErrorResponse{Message: errFindByID.Error()}
 		}
 
 		if errFindByID != nil {
-			httpErrorMsg = &ErrorStruct{Message: errFindByID.Error()}
+			httpErrorMsg = &ErrorResponse{Message: errFindByID.Error()}
 		}
 
 		if errAtoi != nil || errFindByID != nil {
@@ -113,14 +112,13 @@ func postBook(s BookService) gin.HandlerFunc {
 		queryResult, err := s.AddBook(book)
 
 		if err != nil {
-			httpErrorMsg := &ErrorStruct{Message: err.Error()}
+			httpErrorMsg := &ErrorResponse{Message: err.Error()}
 			c.JSON(http.StatusBadRequest, gin.H{
 				"Error": httpErrorMsg,
 			})
 		} else {
-			lastInsertID, _ := queryResult.LastInsertId()
 			c.JSON(http.StatusOK, gin.H{
-				"Created book with ID": lastInsertID,
+				"Created book with ID": queryResult.lastInsertID,
 			})
 		}
 
@@ -128,18 +126,18 @@ func postBook(s BookService) gin.HandlerFunc {
 }
 
 func deleteBook(s BookService) gin.HandlerFunc {
-	var httpErrorMsg *ErrorStruct
+	var httpErrorMsg *ErrorResponse
 
 	return func(c *gin.Context) {
 		ID, errAtoi := strconv.Atoi(c.Param("id"))
 		queryResult, err := s.DeleteBook(ID)
 
 		if errAtoi != nil {
-			httpErrorMsg = &ErrorStruct{Message: errAtoi.Error()}
+			httpErrorMsg = &ErrorResponse{Message: errAtoi.Error()}
 		}
 
 		if err != nil {
-			httpErrorMsg = &ErrorStruct{Message: err.Error()}
+			httpErrorMsg = &ErrorResponse{Message: err.Error()}
 		}
 
 		if errAtoi != nil || err != nil {
@@ -147,9 +145,8 @@ func deleteBook(s BookService) gin.HandlerFunc {
 				"Error": httpErrorMsg,
 			})
 		} else {
-			rowsAffected, _ := queryResult.RowsAffected()
 			c.JSON(http.StatusOK, gin.H{
-				"Deleted books": rowsAffected,
+				"Deleted books": queryResult.rowsAffected,
 			})
 		}
 	}
@@ -159,7 +156,7 @@ func updateBook(s BookService) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		var book Book
-		var httpErrorMsg *ErrorStruct
+		var httpErrorMsg *ErrorResponse
 
 		ID, errAtoi := strconv.Atoi(c.Param("id"))
 
@@ -167,10 +164,10 @@ func updateBook(s BookService) gin.HandlerFunc {
 		queryResult, err := s.UpdateBook(ID, book)
 
 		if errAtoi != nil {
-			httpErrorMsg = &ErrorStruct{Message: errAtoi.Error()}
+			httpErrorMsg = &ErrorResponse{Message: errAtoi.Error()}
 		}
 		if err != nil {
-			httpErrorMsg = &ErrorStruct{Message: err.Error()}
+			httpErrorMsg = &ErrorResponse{Message: err.Error()}
 		}
 
 		if errAtoi != nil || err != nil {
@@ -178,9 +175,8 @@ func updateBook(s BookService) gin.HandlerFunc {
 				"Error": httpErrorMsg,
 			})
 		} else {
-			rowsAffected, _ := queryResult.RowsAffected()
 			c.JSON(http.StatusOK, gin.H{
-				"Updated books": rowsAffected,
+				"Updated books": queryResult.rowsAffected,
 			})
 		}
 

@@ -1,8 +1,6 @@
 package bookstore
 
 import (
-	"database/sql"
-
 	"github.com/jmoiron/sqlx"
 	"tudai.seminario.golang.practica/internal/config"
 )
@@ -20,13 +18,18 @@ type Book struct {
 	Price     float64 `json:"price"`
 }
 
+type queryResult struct {
+	lastInsertID int64
+	rowsAffected int64
+}
+
 // BookService ...
 type BookService interface {
 	FindAll() []*Book
 	FindByID(int) (*Book, error)
-	AddBook(Book) (sql.Result, error)
-	DeleteBook(int) (sql.Result, error)
-	UpdateBook(int, Book) (sql.Result, error)
+	AddBook(Book) (*queryResult, error)
+	DeleteBook(int) (*queryResult, error)
+	UpdateBook(int, Book) (*queryResult, error)
 }
 type service struct {
 	db   *sqlx.DB
@@ -38,7 +41,7 @@ func New(db *sqlx.DB, c *config.Config) (BookService, error) {
 	return service{db, c}, nil
 }
 
-func (s service) AddBook(book Book) (sql.Result, error) {
+func (s service) AddBook(book Book) (*queryResult, error) {
 
 	sqlStatement := `INSERT INTO books (
 													name,
@@ -65,7 +68,14 @@ func (s service) AddBook(book Book) (sql.Result, error) {
 	if err != nil {
 		return nil, err
 	}
-	return result, nil
+
+	resultLastInsertId, _ := result.LastInsertId()
+	sqlResult := &queryResult{
+		lastInsertID: resultLastInsertId,
+		rowsAffected: 0,
+	}
+
+	return sqlResult, nil
 }
 
 func (s service) FindByID(ID int) (*Book, error) {
@@ -91,7 +101,7 @@ func (s service) FindAll() []*Book {
 	return list
 }
 
-func (s service) DeleteBook(ID int) (sql.Result, error) {
+func (s service) DeleteBook(ID int) (*queryResult, error) {
 
 	sqlStatement := `DELETE FROM books WHERE id=?;`
 
@@ -101,10 +111,16 @@ func (s service) DeleteBook(ID int) (sql.Result, error) {
 		return nil, err
 	}
 
-	return result, nil
+	resultRowsAffected, _ := result.RowsAffected()
+	sqlResult := &queryResult{
+		lastInsertID: 0,
+		rowsAffected: resultRowsAffected,
+	}
+
+	return sqlResult, nil
 }
 
-func (s service) UpdateBook(ID int, book Book) (sql.Result, error) {
+func (s service) UpdateBook(ID int, book Book) (*queryResult, error) {
 
 	book.ID = ID
 
@@ -126,5 +142,11 @@ func (s service) UpdateBook(ID int, book Book) (sql.Result, error) {
 		return nil, err
 	}
 
-	return result, nil
+	resultRowsAffected, _ := result.RowsAffected()
+	sqlResult := &queryResult{
+		lastInsertID: 0,
+		rowsAffected: resultRowsAffected,
+	}
+
+	return sqlResult, nil
 }
