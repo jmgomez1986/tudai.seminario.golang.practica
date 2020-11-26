@@ -69,9 +69,9 @@ func (s service) AddBook(book Book) (*queryResult, error) {
 		return nil, err
 	}
 
-	resultLastInsertId, _ := result.LastInsertId()
+	resultLastInsertID, _ := result.LastInsertId()
 	sqlResult := &queryResult{
-		lastInsertID: resultLastInsertId,
+		lastInsertID: resultLastInsertID,
 		rowsAffected: 0,
 	}
 

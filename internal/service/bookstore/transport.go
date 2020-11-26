@@ -1,6 +1,7 @@
 package bookstore
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -135,12 +136,14 @@ func deleteBook(s BookService) gin.HandlerFunc {
 		if errAtoi != nil {
 			httpErrorMsg = &ErrorResponse{Message: errAtoi.Error()}
 		}
-
 		if err != nil {
 			httpErrorMsg = &ErrorResponse{Message: err.Error()}
 		}
+		if queryResult.rowsAffected == 0 {
+			httpErrorMsg = &ErrorResponse{Message: fmt.Sprintf("Requested ID: %v not found", ID)}
+		}
 
-		if errAtoi != nil || err != nil {
+		if errAtoi != nil || err != nil || queryResult.rowsAffected == 0 {
 			c.JSON(http.StatusNotFound, gin.H{
 				"Error": httpErrorMsg,
 			})
@@ -169,8 +172,11 @@ func updateBook(s BookService) gin.HandlerFunc {
 		if err != nil {
 			httpErrorMsg = &ErrorResponse{Message: err.Error()}
 		}
+		if queryResult.rowsAffected == 0 {
+			httpErrorMsg = &ErrorResponse{Message: fmt.Sprintf("Requested ID: %v not found", ID)}
+		}
 
-		if errAtoi != nil || err != nil {
+		if errAtoi != nil || err != nil || queryResult.rowsAffected == 0 {
 			c.JSON(http.StatusNotFound, gin.H{
 				"Error": httpErrorMsg,
 			})
